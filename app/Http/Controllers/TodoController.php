@@ -22,4 +22,15 @@ class TodoController extends Controller
         ]);
         return response()->json($todo, Response::HTTP_CREATED);
     }
+
+    public function destroy($id)
+    {
+        $todo = Todo::findOrFail($id);
+        $todo->delete();
+        $result = [
+            'status' => 'success',
+            'message' => 'Todo deleted successfuly'
+        ];
+        return response()->json($result, Response::HTTP_OK);
+    }
 }
