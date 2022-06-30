@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Traits\CustomApiResponser;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
@@ -67,6 +68,12 @@ class Handler extends ExceptionHandler
         if ($e instanceof ValidationException && $request->expectsJson()) {
             return $this->errorResponse(['errors' => $e->validator->getMessageBag()], 'Incorrect data', $e->status);
         }
+
+        //403 Forbidden
+        if ($e instanceof AccessDeniedHttpException && $request->expectsJson()) {
+            return $this->errorResponse([], 'This action is unauthorized',\Illuminate\Http\Response::HTTP_FORBIDDEN);
+        }
+
         //429 Too Many Requests
         if ($e instanceof ThrottleRequestsException && $request->expectsJson()) {
             return $this->errorResponse([], 'Too many requests', Response::HTTP_TOO_MANY_REQUESTS);

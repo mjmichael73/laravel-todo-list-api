@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTodoRequest;
+use App\Http\Requests\UpdateTodoRequest;
 use App\Http\Resources\TodoCollection;
 use App\Http\Resources\TodoResource;
 use App\Models\Todo;
 use App\Traits\CustomApiResponser;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class TodoController extends Controller
 {
@@ -19,17 +19,8 @@ class TodoController extends Controller
         return new TodoCollection($todos, 'Todos received successfuly.');
     }
 
-    public function store(Request $request)
+    public function store(StoreTodoRequest $request)
     {
-//        $todo = new Todo();
-//        $todo->title = $request->title;
-//        $todo->description = $request->description;
-//        $todo->save();
-
-//        $todo = new Todo();
-//        $todo->title = $request->input('title');
-//        $todo->description = $request->input('description');
-//        $todo->save();
         $todo = Todo::create([
             'title' => $request->title,
             'description' => $request->description
@@ -56,17 +47,9 @@ class TodoController extends Controller
         return new TodoResource($todo, "Todo received successfuly.");
     }
 
-    public function update($id, Request $request)
+    public function update($id, UpdateTodoRequest $request)
     {
         $todo = Todo::findOrFail($id);
-//        $todo->title = $request->title;
-//        $todo->description = $request->description;
-//        $todo->save();
-
-//        $todo->title = $request->input('title');
-//        $todo->description = $request->input('description');
-//        $todo->save();
-
         $result = $todo->update([
             'title' => $request->title,
             'description' => $request->description
