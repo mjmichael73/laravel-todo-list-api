@@ -31,7 +31,7 @@ class TodoController extends Controller
             'title' => $request->title,
             'description' => $request->description
         ]);
-        if(!$todo) {
+        if (!$todo) {
             return response()->json(["message" => "failed"], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new TodoResource($todo, "Todo created successfuly.");
@@ -40,7 +40,10 @@ class TodoController extends Controller
     public function destroy($id)
     {
         $todo = Todo::findOrFail($id);
-        $todo->delete();
+        $result = $todo->delete();
+        if (!$result) {
+            return response()->json(["message" => "failed"], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         $result = [
             'status' => 'success',
             'message' => 'Todo deleted successfuly'
@@ -65,10 +68,13 @@ class TodoController extends Controller
 //        $todo->description = $request->input('description');
 //        $todo->save();
 
-        $todo->update([
+        $result = $todo->update([
             'title' => $request->title,
             'description' => $request->description
         ]);
+        if (!$result) {
+            return response()->json(["message" => "failed"], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         return new TodoResource($todo, "Todo updated successfuly.");
     }
 }
