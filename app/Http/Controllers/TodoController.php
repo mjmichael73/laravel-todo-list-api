@@ -10,7 +10,7 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $todos = Todo::all();
+        $todos = Todo::pagiante(10);
         return response()->json($todos, Response::HTTP_OK);
     }
 
