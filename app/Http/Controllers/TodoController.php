@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TodoCollection;
+use App\Http\Resources\TodoResource;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,8 +12,8 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $todos = Todo::pagiante(10);
-        return response()->json($todos, Response::HTTP_OK);
+        $todos = Todo::paginate(10);
+        return new TodoCollection($todos, 'Todos received successfuly.');
     }
 
     public function store(Request $request)
@@ -29,7 +31,10 @@ class TodoController extends Controller
             'title' => $request->title,
             'description' => $request->description
         ]);
-        return response()->json($todo, Response::HTTP_CREATED);
+        if(!$todo) {
+            return response()->json(["message" => "failed"], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new TodoResource($todo, "Todo created successfuly.");
     }
 
     public function destroy($id)
@@ -46,7 +51,7 @@ class TodoController extends Controller
     public function show($id)
     {
         $todo = Todo::findOrFail($id);
-        return response()->json($todo, Response::HTTP_OK);
+        return new TodoResource($todo, "Todo received successfuly.");
     }
 
     public function update($id, Request $request)
@@ -64,6 +69,6 @@ class TodoController extends Controller
             'title' => $request->title,
             'description' => $request->description
         ]);
-        return response()->json($todo, Response::HTTP_OK);
+        return new TodoResource($todo, "Todo updated successfuly.");
     }
 }
