@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Resources\TodoCollection;
 use App\Http\Resources\TodoResource;
 use App\Models\Todo;
+use App\Traits\CustomApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class TodoController extends Controller
 {
+    use CustomApiResponser;
+
     public function index()
     {
         $todos = Todo::paginate(10);
@@ -32,7 +35,7 @@ class TodoController extends Controller
             'description' => $request->description
         ]);
         if (!$todo) {
-            return response()->json(["message" => "failed"], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->errorResponse([], 'Failed to create Todo');
         }
         return new TodoResource($todo, "Todo created successfuly.");
     }
@@ -42,13 +45,9 @@ class TodoController extends Controller
         $todo = Todo::findOrFail($id);
         $result = $todo->delete();
         if (!$result) {
-            return response()->json(["message" => "failed"], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $this->errorResponse([], "Failed to delete Todo");
         }
-        $result = [
-            'status' => 'success',
-            'message' => 'Todo deleted successfuly'
-        ];
-        return response()->json($result, Response::HTTP_OK);
+        return $this->successResponse([], 'Todo deleted successfuly');
     }
 
     public function show($id)
@@ -73,7 +72,7 @@ class TodoController extends Controller
             'description' => $request->description
         ]);
         if (!$result) {
-            return response()->json(["message" => "failed"], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->errorResponse([], "Failed to updated Todo");
         }
         return new TodoResource($todo, "Todo updated successfuly.");
     }
