@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\Response;
+
 trait CustomApiResponser
 {
     public function successResponse($data, $message = null, $code = Response::HTTP_OK)

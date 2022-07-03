@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTodoRequest;
 use App\Http\Requests\UpdateTodoRequest;
+use App\Http\Requests\UploadTodoRequest;
 use App\Http\Resources\TodoCollection;
 use App\Http\Resources\TodoResource;
 use App\Models\Todo;
 use App\Traits\CustomApiResponser;
+use Illuminate\Support\Facades\Storage;
 
 class TodoController extends Controller
 {
@@ -23,7 +25,8 @@ class TodoController extends Controller
     {
         $todo = Todo::create([
             'title' => $request->title,
-            'description' => $request->description
+            'description' => $request->description,
+            'file_url' => $request->file_url,
         ]);
         if (!$todo) {
             return $this->errorResponse([], 'Failed to create Todo');
@@ -58,5 +61,17 @@ class TodoController extends Controller
             return $this->errorResponse([], "Failed to updated Todo");
         }
         return new TodoResource($todo, "Todo updated successfuly.");
+    }
+
+    public function upload(UploadTodoRequest $request)
+    {
+        $file = $request->file('todo_file');
+        $result = $file->store('public/pictures');
+        if (!$result) {
+            return $this->errorResponse([], "File upload failed.");
+        }
+        return $this->successResponse([
+            'todo_file' => env('APP_URL') . ":" . env('APP_PORT') . Storage::url($result)
+        ], 'File uploaded successfully.');
     }
 }
