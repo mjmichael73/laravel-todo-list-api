@@ -34,9 +34,8 @@ class TodoController extends Controller
         return new TodoResource($todo, "Todo created successfuly.");
     }
 
-    public function destroy($id)
+    public function destroy(Todo $todo)
     {
-        $todo = Todo::findOrFail($id);
         $result = $todo->delete();
         if (!$result) {
             $this->errorResponse([], "Failed to delete Todo");
@@ -44,15 +43,13 @@ class TodoController extends Controller
         return $this->successResponse([], 'Todo deleted successfuly');
     }
 
-    public function show($id)
+    public function show(Todo $todo)
     {
-        $todo = Todo::findOrFail($id);
         return new TodoResource($todo, "Todo received successfuly.");
     }
 
-    public function update($id, UpdateTodoRequest $request)
+    public function update(Todo $todo, UpdateTodoRequest $request)
     {
-        $todo = Todo::findOrFail($id);
         $result = $todo->update([
             'title' => $request->title,
             'description' => $request->description
