@@ -10,6 +10,7 @@ use App\Http\Resources\TodoResource;
 use App\Jobs\SendTodoCreatedMail;
 use App\Models\Todo;
 use App\Traits\CustomApiResponser;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,8 +20,13 @@ class TodoController extends Controller
 
     public function index()
     {
+//        App::setLocale("fa");
+//        if (App::isLocal("fa")) {
+//            //
+//        }
+//        $locale = App::currentLocale();
         $todos = Todo::paginate(10);
-        return new TodoCollection($todos, 'Todos received successfuly.');
+        return new TodoCollection($todos, __('messages.todo.index.success'));
     }
 
     public function store(StoreTodoRequest $request)
