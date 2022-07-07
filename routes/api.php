@@ -9,10 +9,7 @@ use App\Http\Controllers\AuthController;
 Route::post('/v1/user/register', [AuthController::class, 'register']);
 Route::post('/v1/user/login', [AuthController::class, 'login']);
 
-Route::group(['prefix' => '/v1/todos', 'middleware' => 'auth:api'], function() {
-//    if (\Illuminate\Support\Facades\App::isLocal("fa")) {
-//        Route::get('/', [TodoController::class, 'index']);
-//    }
+Route::group(['prefix' => '/v1/todos', 'middleware' => 'auth:sanctum'], function() {
     Route::get('/', [TodoController::class, 'index']);
     Route::post('/', [TodoController::class, 'store']);
     Route::delete('/{todo}', [TodoController::class, 'destroy']);
