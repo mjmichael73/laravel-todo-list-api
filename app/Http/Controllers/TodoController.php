@@ -18,7 +18,7 @@ class TodoController extends Controller
 
     public function index()
     {
-        $todos = Todo::paginate(10);
+        $todos = Todo::withTrashed()->paginate(10);
         return new TodoCollection($todos, __('messages.todo.index.success'));
     }
 
